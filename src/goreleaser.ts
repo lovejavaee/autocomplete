@@ -13,7 +13,7 @@ const completionSpec: Fig.Spec = {
         {
           name: ["--config", "-f"],
           description: "Load configuration from file",
-          args: { name: "config", template: "filepaths" },
+          args: { name: "config", template: ["filepaths"] },
         },
         {
           name: "--deprecated",
@@ -48,12 +48,28 @@ const completionSpec: Fig.Spec = {
           description:
             "Builds only for current GOOS and GOARCH, regardless of what's set in the configuration file",
         },
-        { name: "--skip-before", description: "Skips global before hooks" },
+        {
+          name: "--skip",
+          description:
+            "Skip the given options (valid options are: before, post-hooks, pre-hooks, validate)",
+          isRepeatable: true,
+          args: { name: "skip" },
+        },
+        {
+          name: "--skip-before",
+          description: "Skips global before hooks",
+          hidden: true,
+        },
         {
           name: "--skip-post-hooks",
           description: "Skips all post-build hooks",
+          hidden: true,
         },
-        { name: "--skip-validate", description: "Skips several sanity checks" },
+        {
+          name: "--skip-validate",
+          description: "Skips several sanity checks",
+          hidden: true,
+        },
         {
           name: "--snapshot",
           description:
@@ -72,8 +88,9 @@ const completionSpec: Fig.Spec = {
       options: [
         {
           name: ["--config", "-f"],
-          description: "Configuration file to check",
-          args: { name: "config" },
+          description: "Configuration file(s) to check",
+          hidden: true,
+          args: { name: "config", template: ["filepaths"] },
         },
         {
           name: "--deprecated",
@@ -136,7 +153,7 @@ const completionSpec: Fig.Spec = {
         {
           name: ["--config", "-f"],
           description: "Configuration file",
-          args: { name: "config", template: "filepaths" },
+          args: { name: "config", template: ["filepaths"] },
         },
         { name: ["--quiet", "-q"], description: "Quiet mode: no output" },
       ],
@@ -148,7 +165,11 @@ const completionSpec: Fig.Spec = {
         {
           name: ["--config", "-f"],
           description: "Load configuration from file",
-          args: { name: "config", default: ".goreleaser.yaml" },
+          args: {
+            name: "config",
+            default: ".goreleaser.yaml",
+            template: ["filepaths"],
+          },
         },
       ],
     },
@@ -184,6 +205,11 @@ const completionSpec: Fig.Spec = {
           hidden: true,
         },
         {
+          name: "--fail-fast",
+          description:
+            "Whether to abort the release publishing on the first error",
+        },
+        {
           name: ["--parallelism", "-p"],
           description:
             "Amount tasks to run concurrently (default: number of CPUs)",
@@ -192,36 +218,36 @@ const completionSpec: Fig.Spec = {
         {
           name: "--release-footer",
           description: "Load custom release notes footer from a markdown file",
-          args: { name: "release-footer", template: "filepaths" },
+          args: { name: "release-footer", template: ["filepaths"] },
         },
         {
           name: "--release-footer-tmpl",
           description:
             "Load custom release notes footer from a templated markdown file (overrides --release-footer)",
-          args: { name: "release-footer-tmpl", template: "filepaths" },
+          args: { name: "release-footer-tmpl", template: ["filepaths"] },
         },
         {
           name: "--release-header",
           description: "Load custom release notes header from a markdown file",
-          args: { name: "release-header", template: "filepaths" },
+          args: { name: "release-header", template: ["filepaths"] },
         },
         {
           name: "--release-header-tmpl",
           description:
             "Load custom release notes header from a templated markdown file (overrides --release-header)",
-          args: { name: "release-header-tmpl", template: "filepaths" },
+          args: { name: "release-header-tmpl", template: ["filepaths"] },
         },
         {
           name: "--release-notes",
           description:
             "Load custom release notes from a markdown file (will skip GoReleaser changelog generation)",
-          args: { name: "release-notes", template: "filepaths" },
+          args: { name: "release-notes", template: ["filepaths"] },
         },
         {
           name: "--release-notes-tmpl",
           description:
             "Load custom release notes from a templated markdown file (overrides --release-notes)",
-          args: { name: "release-notes-tmpl", template: "filepaths" },
+          args: { name: "release-notes-tmpl", template: ["filepaths"] },
         },
         {
           name: "--rm-dist",
@@ -229,26 +255,52 @@ const completionSpec: Fig.Spec = {
           hidden: true,
         },
         {
-          name: "--skip-announce",
-          description: "Skips announcing releases (implies --skip-validate)",
+          name: "--skip",
+          description:
+            "Skip the given options (valid options are announce, aur, before, chocolatey, docker, homebrew, ko, nfpm, nix, publish, sbom, scoop, sign, snapcraft, validate, winget)",
+          isRepeatable: true,
+          args: { name: "skip" },
         },
-        { name: "--skip-before", description: "Skips global before hooks" },
+        {
+          name: "--skip-announce",
+          description: "Skips announcing releases (implies --skip=validate)",
+          hidden: true,
+        },
+        {
+          name: "--skip-before",
+          description: "Skips global before hooks",
+          hidden: true,
+        },
         {
           name: "--skip-docker",
           description: "Skips Docker Images/Manifests builds",
+          hidden: true,
         },
-        { name: "--skip-ko", description: "Skips Ko builds" },
+        { name: "--skip-ko", description: "Skips Ko builds", hidden: true },
         {
           name: "--skip-publish",
-          description: "Skips publishing artifacts (implies --skip-announce)",
+          description: "Skips publishing artifacts (implies --skip=announce)",
+          hidden: true,
         },
-        { name: "--skip-sbom", description: "Skips cataloging artifacts" },
-        { name: "--skip-sign", description: "Skips signing artifacts" },
-        { name: "--skip-validate", description: "Skips git checks" },
+        {
+          name: "--skip-sbom",
+          description: "Skips cataloging artifacts",
+          hidden: true,
+        },
+        {
+          name: "--skip-sign",
+          description: "Skips signing artifacts",
+          hidden: true,
+        },
+        {
+          name: "--skip-validate",
+          description: "Skips git checks",
+          hidden: true,
+        },
         {
           name: "--snapshot",
           description:
-            "Generate an unversioned snapshot release, skipping all validations and without publishing any artifacts (implies --skip-publish, --skip-announce and --skip-validate)",
+            "Generate an unversioned snapshot release, skipping all validations and without publishing any artifacts (implies --skip=announce,publish,validate)",
         },
         {
           name: "--timeout",
@@ -306,7 +358,12 @@ const completionSpec: Fig.Spec = {
     },
   ],
   options: [
-    { name: "--debug", description: "Enable debug mode", isPersistent: true },
+    { name: "--debug", description: "Enable verbose mode", isPersistent: true },
+    {
+      name: "--verbose",
+      description: "Enable verbose mode",
+      isPersistent: true,
+    },
     { name: ["--help", "-h"], description: "Display help", isPersistent: true },
   ],
 };
