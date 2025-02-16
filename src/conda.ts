@@ -1,20 +1,24 @@
 const getInstalledPackages: Fig.Generator = {
-  script: "conda list",
+  script: ["conda", "list"],
   postProcess: function (out) {
     const lines = out.split("\n");
     const installedPackages = [];
-    for (let i = 2; i < lines.length; i++) {
-      installedPackages.push({
-        name: lines[i],
-        icon: "🐍",
-      });
+    for (let i = 3; i < lines.length; i++) {
+      const line = lines[i].trim();
+      if (line) {
+        const packageName = line.split(/\s+/)[0];
+        installedPackages.push({
+          name: packageName,
+          icon: "🐍",
+        });
+      }
     }
     return installedPackages;
   },
 };
 
 // const getAllCondaPackages: Fig.Generator = {
-//   //script: "conda search -q",
+//   //script: ["conda", "search", "-q"],
 //   script: function (context) {
 //     if (context[context.length - 1] === "") return "";
 //     const searchTerm = context[context.length - 1];
@@ -35,7 +39,7 @@ const getInstalledPackages: Fig.Generator = {
 // };
 
 const getCondaEnvironments: Fig.Generator = {
-  script: "conda env list",
+  script: ["conda", "env", "list"],
   scriptTimeout: 10000,
   cache: {
     ttl: 10000,
@@ -56,7 +60,7 @@ const getCondaEnvironments: Fig.Generator = {
 };
 
 const getCondaConfigs: Fig.Generator = {
-  script: "conda config --show",
+  script: ["conda", "config", "--show"],
   postProcess: function (out) {
     const lines = out.split("\n");
     const configs: Fig.Suggestion[] = [];
